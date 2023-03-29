@@ -12,8 +12,6 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from smtplib import SMTP_SSL
-import schedule
-import time
 import logging
 import os
 from email.mime.application import MIMEApplication
@@ -21,6 +19,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate, formataddr
 
+load_dotenv()
 
 message = '''
 Guten Tag Liebes Dekanat,
@@ -40,7 +39,6 @@ URL_TEMPLATE = "https://registration.pep-dortmund.org/events/{event}/participant
 
 
 def get_participants():
-    load_dotenv()
 
     user = os.getenv("PEP_USER") or input("Username for registration.pep-dortmund.org: ")
     password = os.getenv("PEP_PASSWORD") or getpass("Password: ")
@@ -112,9 +110,13 @@ def save_excel(outputpath):
 
 def send_mail():
     msg = MIMEMultipart()
-    from_addr = formataddr(("Maximilian Linhoff", "maximilian.linhoff@tu-dortmund.de"))
-    to_addrs = ["dekanat.physik@tu-dortmund.de"]
+    from_addr = formataddr(("PeP et al. e.V.", "no-reply@pep-dortmund.org"))
+    to_addrs = [
+        "dekanat.physik@tu-dortmund.de",
+        "maximilian.linhoff@tu-dortmund.de",
+    ]
     msg['From'] = from_addr
+    msg['Reply-To'] = formataddr(("Maximilian Linhoff", "maximilian.linhoff@tu-dortmund.de"))
     msg['To'] = COMMASPACE.join(to_addrs)
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = "Update Anmeldungen 50-Jahr-Feier"
@@ -130,8 +132,8 @@ def send_mail():
 
     server = os.getenv("PEP_MAIL_SERVER", "unimail.tu-dortmund.de")
     port = int(os.getenv("PEP_MAIL_PORT", 465))
-    user = os.getenv("PEP_MAIL_USER", input("Unimail Account: "))
-    password = os.getenv("PEP_MAIL_PASSWORD", getpass("Unimail Password: "))
+    user = os.getenv("PEP_MAIL_USER") or input("Mail Username: ")
+    password = os.getenv("PEP_MAIL_PASSWORD") or getpass("Mail Password: ")
 
     with SMTP_SSL(server, port) as smtp:
         logging.info('Connecting')
@@ -141,4 +143,6 @@ def send_mail():
         logging.info('Message sent')
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Scheduling mail sending")
     send_mail()
