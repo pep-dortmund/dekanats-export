@@ -144,7 +144,7 @@ def send_mail():
         logging.info('Message sent')
 
 if __name__ == "__main__":
-    save_excel("participants.xlsx")
-    # logging.basicConfig(level=logging.INFO)
-    # logging.info("Scheduling mail sending")
-    # send_mail()
+    # save_excel("participants.xlsx")
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Scheduling mail sending")
+    send_mail()
