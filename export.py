@@ -74,8 +74,8 @@ def save_excel(outputpath):
             "Anmeldng bestätigt": p["status_name"] == "confirmed",
             "Email": p["data"]["email"],
             "Festkolloquium": p["data"]["freitag"]["symp"],
-            "Festessen": p["data"]["freitag"]["symp"],
-            "Begleitung Festessen": int(p["data"]["freitag"]["symp"]),
+            "Festessen": p["data"]["freitag"]["dinner"],
+            "Begleitung Festessen": int(p["data"]["freitag"]["begleitung_freitag"]),
             "Brötchen und Borussia": p["data"]["samstag"]["BuB"],
             "Alumnigrillen & Laborführungen": p["data"]["samstag"]["bbq"],
             "Anzahl Begleitpersonen": p["data"]["samstag"]["begleitung_samstag"],
@@ -144,6 +144,7 @@ def send_mail():
         logging.info('Message sent')
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    logging.info("Scheduling mail sending")
-    send_mail()
+    save_excel("participants.xlsx")
+    # logging.basicConfig(level=logging.INFO)
+    # logging.info("Scheduling mail sending")
+    # send_mail()
