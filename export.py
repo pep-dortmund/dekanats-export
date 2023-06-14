@@ -71,7 +71,7 @@ def save_excel(outputpath):
     participants = [
         {
             "Name": p["data"]["name"],
-            "Anmeldng bestätigt": p["status_name"] == "confirmed",
+            "Anmeldung bestätigt": p["status_name"] == "confirmed",
             "Email": p["data"]["email"],
             "Festkolloquium": p["data"]["freitag"]["symp"],
             "Festessen": p["data"]["freitag"]["dinner"],
